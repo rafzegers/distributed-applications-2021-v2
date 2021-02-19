@@ -9,7 +9,7 @@ Read [assignment.md](assignment/assignment.md)
 To be done once: add our project repo as an extra remote called `upstream`.
 
 ```bash
-git remote add upstream https://github.com/distributed-applications-2021/assignment
+git remote add upstream https://github.com/distributed-applications-2021/assignment2021-v2
 ```
 
 To be done at each update:
@@ -18,4 +18,4 @@ To be done at each update:
 git pull upstream main
 ```
 
-To be notified of updates, register as watcher [here](https://github.com/distributed-applications-2021/assignment).
+To be notified of updates, register as watcher [here](https://github.com/distributed-applications-2021/assignment2021-v2).
