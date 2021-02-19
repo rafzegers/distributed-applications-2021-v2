@@ -50,6 +50,10 @@ Read the requirements for the [chunk creator application](chunk_creator_applicat
 
 Read the requirements for the [cloner worker application](cloner_worker_application_requirements.md).
 
+### __Extension__ -> A insights app
+
+Read the requirements for the [insights application](insights_application_requirements.md).
+
 ## Some things to get you started
 
 We provide you with 2 libraries:

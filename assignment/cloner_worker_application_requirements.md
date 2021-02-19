@@ -15,7 +15,15 @@ This application consists of following modules:
 
 ## Data flow
 
-The __chunk consumer__ will start with consuming the message from the `todo-chunk` topic. It will decode the message and give the task to the __manager__, who will put this task on the __queue__. The __manager__ will periodically pull an task from the __queue__ and give it to an available worker. When a worker receives a task it will register with the rate limiter that he is waiting for permission to start his task. When he gets this permission he checks whether the window size is not to big and fetches the data from the public API. When the window size is to big, the worker will create an `AssignmentMessages.ClonedChunk` struct with `:WINDOW_TOO_BIG`. If the data fetch is succesful, the worker will put the data in a `AssignmentMessages.ClonedChunk` struct and send it back to the __manager__. If the fetch is not succesful, you need to log an error.
+The __chunk consumer__ will start with consuming the message from the `todo-chunk` topic. It will decode the message and give the task to the __manager__, who will put this task on the __queue__. ~~The __manager__ will periodically pull an task from the __queue__ and give it to an available worker. When a worker receives a task it will register with the rate limiter that he is waiting for permission to start his task. When he gets this permission he checks whether the window size is not to big and fetches the data from the public API. When the window size is to big, the worker will create an `AssignmentMessages.ClonedChunk` struct with `:WINDOW_TOO_BIG`. If the data fetch is succesful, the worker will put the data in a `AssignmentMessages.ClonedChunk` struct and send it back to the __manager__. If the fetch is not succesful, you need to log an error.~~
+
+The following requirements apply:
+
+* Do not work with periodic checks. Think about performance. Sending a message to yourself every 10 ms to emulate a loop is definitely not a best practice.
+* Think about what happens during an __unexpected crash__. This means that __during__ the clone, an error occurs. Will your application retry? Will it log and error and have gaps in the database? Make your application __robust__. Robustness is preferred over performance!
+* __Use tasks instead of genservers__ for the worker processes!
+* Don't make your processing synchronous. Multiple processes should be able to call `WorkerManager` at the same time. The requests should be processed asynchronously and return an answer.
+* Your code should be loosely coupled. The ratelimiter should be able to be used in other projects. Same for the queue process. The same applies for other modules of course.
 
 ## Libraries and usage for this application
 
@@ -83,8 +91,13 @@ iex> ClonerWorker.Queue.add_to_queue
 :ok
 iex> ClonerWorker.Queue.get_first_element
 {:ok, first_element_from_queue}
-iex> ClonerWorker.WorkerManager.add_task
-TODO
+iex> ClonerWorker.WorkerManager.add_task %AssignmentMessages.TodoChunk{} # a valid task of course, not an empty struct
+# Returns an answer. E.g. :
+%AssignmentMessages.ClonedChunk{
+          chunk_result: :COMPLETE,
+          original_todo_chunk: todo,
+          entries: [...]
+        }
 iex> ClonerWorker.RateLimiter.register
 :ok
 iex> ClonerWorker.RateLimiter.set_rate
