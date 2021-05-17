@@ -51,9 +51,9 @@ Create the following functions:
 
 Following processes (not necessarily modules!) are expected to be alive when your application starts:
 
-* `ClonerWorker.MyRegistry`
+* ~~`ClonerWorker.MyRegistry`~~ => No longer applicable when you work with Tasks. You can still use it, but it'd be a bit strange to register your tasks in a Registry.
 * `ClonerWorker.WorkerDynamicSupervisor`
-* n `ClonerWorker.Worker` processes depending on your config. You don't need to be able to change the amount of workers at runtime.
+* ~~n `ClonerWorker.Worker` processes depending on your config. You don't need to be able to change the amount of workers at runtime.~~ => No longer applicable with Tasks. Changing the amount of maximum Tasks at runtime is very easy, though not a requirement.
   * Registers itself in the registry as {:worker, n} where n is a number.
 * `ClonerWorker.Queue`
 * `ClonerWorker.WorkerManager`
