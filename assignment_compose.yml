@@ -2,6 +2,16 @@
 version: "3.3"
 
 services:
+  assignment_database:
+    image: mysql
+    environment:
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 't'
+      MYSQL_ROOT_PASSWORD: 't'
+      MYSQL_DATABASE: 'distributed_applications'
+    ports:
+      - 3306:3306
+  
   zookeeper_1:
     image: confluentinc/cp-zookeeper:latest
     container_name: zookeeper_1
