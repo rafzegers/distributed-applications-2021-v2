@@ -4,11 +4,24 @@ defmodule Director.Application do
   @moduledoc false
 
   use Application
+  import Supervisor.Spec
+
+  @consumer_group "finished-tasks-consumer-group"
+  @topic "finished-tasks"
 
   def start(_type, _args) do
+    consumer_group_opts = []
+    gen_consumer_impl = Director.FinishedTaskConsumer
+    topic_names = [@topic]
+
     children = [
       # Starts a worker by calling: Director.Worker.start_link(arg)
       # {Director.Worker, arg}
+      {Director.Repo, []},
+      supervisor(
+        KafkaEx.ConsumerGroup,
+        [gen_consumer_impl, @consumer_group, topic_names, consumer_group_opts]
+      )
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
