@@ -10,6 +10,8 @@ defmodule Director.TaskConsumer do
     for %Message{value: message} <- message_set do
 
       message = AssignmentMessages.decode_message!(message)
+      IO.inspect("JOW MESSAGE")
+      IO.inspect(message)
     end
 
     {:async_commit, state}
