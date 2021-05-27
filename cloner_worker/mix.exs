@@ -23,7 +23,9 @@ defmodule ClonerWorker.MixProject do
   defp deps do
     [
       {:kafka_ex, "~> 0.11.0"},
-      {:assignment_messages, git: "https://github.com/distributed-applications-2021/assignment-messages", branch: "main"}
+      {:assignment_messages, git: "https://github.com/distributed-applications-2021/assignment-messages", branch: "main"},
+      {:httpoison, "~> 1.8"},
+      {:jason, "~> 1.2"}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
     ]
