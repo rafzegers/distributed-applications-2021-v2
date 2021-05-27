@@ -43,7 +43,7 @@ defmodule ChunkCreator.TodoTaskConsumer do
         chunks_db = DatabaseInteraction.TaskStatusContext.generate_chunk_windows(task.from_unix_ts, task.until_unix_ts, max_window_size_in_sec)
         
         # maak task
-        {:ok, task_db} = DatabaseInteraction.TaskStatusContext.create_full_task( %{from: utc_from, until: utc_until, uuid: task.task_uuid}, pair_db, chunks)
+        {:ok, task_db} = DatabaseInteraction.TaskStatusContext.create_full_task( %{from: utc_from, until: utc_until, uuid: task.task_uuid}, pair_db, chunks_db)
         
         for chunk <- chunks_db do
           # send chucks to cloner worker
