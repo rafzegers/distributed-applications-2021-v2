@@ -1,4 +1,9 @@
 defmodule FinishedTasksKafkaContext do
+  alias KafkaEx.Protocol.Fetch.Message
+  alias KafkaEx.Protocol.Produce.Request
+
+  @topic "finished-tasks"
+
   @moduledoc """
   Documentation for `ChunkCreator`.
   """
@@ -17,7 +22,10 @@ defmodule FinishedTasksKafkaContext do
   end
 
   def produce_message(messages) do
-    :world
+    for message <- messages do
+      request = %{%Request{topic: @topic, required_acks: 1} | messages: [message]}
+      KafkaEx.produce(request)
+    end
   end
 
 end

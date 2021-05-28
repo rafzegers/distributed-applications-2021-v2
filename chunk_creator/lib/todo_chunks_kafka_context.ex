@@ -1,4 +1,7 @@
 defmodule TodoChucksKafkaContext do
+  alias KafkaEx.Protocol.Fetch.Message
+  alias KafkaEx.Protocol.Produce.Request
+  @topic "todo-chunks"
   @moduledoc """
   Documentation for `ChunkCreator`.
   """
@@ -16,8 +19,11 @@ defmodule TodoChucksKafkaContext do
     :world
   end
 
-  def produce_message(message) do
-    :world
+  def produce_message(messages) do
+    for message <- messages do
+      request = %{%Request{topic: @topic, required_acks: 1} | messages: [message]}
+      KafkaEx.produce(request)
+    end
   end
 
 end

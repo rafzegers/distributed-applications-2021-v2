@@ -6,23 +6,32 @@ defmodule ChunkCreator.Application do
   use Application
   import Supervisor.Spec
 
-  @consumer_group "todo-tasks-consumer-group"
-  @topic "todo-tasks"
+  @todo_tasks_consumer_group "todo-tasks-consumer-group"
+  @todo_tasks "todo-tasks"
+  @finished_chunks_consumer_group "finished-chunks-consumer-group"
+  @finished_chunks "finished-chunks"
 
   def start(_type, _args) do
 
     consumer_group_opts = []
-    gen_consumer_impl = ChunkCreator.TodoTaskConsumer
-    topic_names = [@topic]
+    todo_task_gen_consumer_impl = ChunkCreator.TodoTaskConsumer
+    todo_task_topic_names = [@todo_tasks]
+
+    finished_chunks_gen_consumer_impl = ChunkCreator.CompletedChunksConsumer
+    finished_chunks_topic_names = [@finished_chunks]
 
     children = [
       {ChunkCreator.Repo, []},
       # Starts a worker by calling: ChunkCreator.Worker.start_link(arg)
       # {ChunkCreator.Worker, arg}
-      supervisor(
-        KafkaEx.ConsumerGroup,
-        [gen_consumer_impl, @consumer_group, topic_names, consumer_group_opts]
-      )
+      %{
+        id: TodoTasksConsumerGroup,
+        start: {KafkaEx.ConsumerGroup, :start_link, [todo_task_gen_consumer_impl, @todo_tasks_consumer_group, todo_task_topic_names, consumer_group_opts]}
+      },
+      %{
+        id: FinishedChunksConsumerGroup,
+        start: {KafkaEx.ConsumerGroup, :start_link, [finished_chunks_gen_consumer_impl, @finished_chunks_consumer_group, finished_chunks_topic_names, consumer_group_opts]}
+      }
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
