@@ -11,7 +11,7 @@ defmodule Director.Application do
 
   def start(_type, _args) do
     consumer_group_opts = []
-    gen_consumer_impl = Director.FinishedTaskConsumer
+    gen_consumer_impl = Director.TaskConsumer
     topic_names = [@topic]
 
     children = [
