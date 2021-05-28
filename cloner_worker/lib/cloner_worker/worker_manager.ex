@@ -15,6 +15,10 @@ defmodule ClonerWorker.WorkerManager do
 
   def add_worker(worker), do: GenServer.cast(__MODULE__, {:add_worker, worker})
 
+  def change_worker_status(worker_pid) do
+      GenServer.cast(__MODULE__, {:change_worker_status, worker_pid})
+  end
+
   def handle_cast({:add_worker, worker}, state = %__MODULE__{workers: workers}) do
     workers_new = workers ++ [worker]
     {:noreply, %__MODULE__{state | workers: workers_new}}
@@ -38,6 +42,12 @@ defmodule ClonerWorker.WorkerManager do
       IO.puts("no workers available")
       {:noreply, %__MODULE__{workers: workers}}
     end
+  end
+
+  def handle_cast({:change_worker_status, worker_pid}, %__MODULE__{} = state) do
+    worker_index = Enum.find_index(state.workers, fn worker -> worker.pid == worker_pid end)
+    workers = List.replace_at(state.workers, worker_index, %{pid: worker_pid, available: true})
+    {:noreply, %__MODULE__{workers: workers}}
   end
 
 end

@@ -20,7 +20,7 @@ defmodule ClonerWorker.Application do
       {ClonerWorker.WorkerManager, []},
       {ClonerWorker.RateLimiter, []},
       {ClonerWorker.WorkerDynamicSupervisor, []},
-      {Task, &ClonerWorker.WorkerDynamicSupervisor.start_workers/0},  # ------------- TODO
+      {Task, &ClonerWorker.WorkerDynamicSupervisor.start_workers/0},
       # Starts a worker by calling: ClonerWorker.Worker.start_link(arg)
       # {ClonerWorker.Worker, arg}
       supervisor(
